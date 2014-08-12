@@ -1,84 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp">
 <head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
+  <meta charset="UTF-8">
+  <title></title>
 
-    <link rel="stylesheet" href="../../components/bootstrap/dist/css/bootstrap.css"/>
+  <link rel="stylesheet" href="../../components/bootstrap/dist/css/bootstrap.css"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="../../components/angular/angular.js"></script>
+  <script src="app.js"></script>
 
 </head>
 
-<body>
+<body ng-controller="taskController as taskCtrl">
 
 <div class="container">
 
-    <div class="page-header">
-        <h1>Need To Do!</h1>
+  <div class="page-header">
+    <h1>Need To Do!</h1>
 
-        <p>simple introduction level angular project</p>
+    <p>simple introduction level angular project</p>
+  </div>
+
+  <form class="form-inline">
+
+    <div class="form-group">
+      <label for="taskTitle">Task Title</label>
+      <input type="text" class="form-control" id="taskTitle" placeholder="title..." ng-model="newTask.title">
     </div>
 
-    <form class="form-inline">
+    <div class="form-group">
+      <label for="taskDesc">Description</label>
+      <input class="form-control" id="taskDesc" placeholder="description.." ng-model="newTask.description">
+    </div>
 
-        <div class="form-group">
-            <label for="taskTitle">Task Title</label>
-            <input type="text" class="form-control" id="taskTitle" placeholder="title...">
-        </div>
-
-        <div class="form-group">
-            <label for="taskDesc">Description</label>
-            <input class="form-control" id="taskDesc" placeholder="description..">
-        </div>
-
-        <div class="form-group">
-            <button class="form-control btn btn-primary">Add</button>
-        </div>
-    </form>
+    <div class="form-group">
+      <button class="form-control btn btn-primary" ng-click="taskCtrl.addTask(newTask)" >Add</button>
+    </div>
+  </form>
 
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>done</th>
-            <th>title</th>
-            <th>description</th>
-            <th>actions</th>
-        </tr>
-        </thead>
-        <tbody>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>done</th>
+      <th>title</th>
+      <th>description</th>
+      <th>actions</th>
+    </tr>
+    </thead>
+    <tbody>
 
-            <tr>
-                <td><input class="input" type="checkbox"/></td>
-                <td>learn angular!</td>
-                <td>start from scratch, build your skills</td>
-                <td>
-                    <button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
-                    <button class="btn btn-info"><span class="glyphicon glyphicon-edit"></span></button>
-                </td>
-            </tr>
+    <tr ng-repeat="task in taskCtrl.tasks">
+      <td><input class="input" type="checkbox" ng-model="done"/></td>
+      <td ng-class="{strike: done}">{{task.title}}</td>
+      <td ng-class="{strike: done}">{{task.description}}</td>
+      <td>
+        <button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+        <button class="btn btn-info"><span class="glyphicon glyphicon-edit"></span></button>
+      </td>
+    </tr>
 
-            <tr>
-                <td><input class="input" type="checkbox"/></td>
-                <td>play with controllers!</td>
-                <td>make sure to understand whats going on</td>
-                <td>
-                    <button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
-                    <button class="btn btn-info"><span class="glyphicon glyphicon-edit"></span></button>
-                </td>
-            </tr>
-
-            <tr>
-                <td><input class="input" type="checkbox"/></td>
-                <td>try bootstrap</td>
-                <td>pototype a gui is easy</td>
-                <td>
-                    <button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
-                    <button class="btn btn-info"><span class="glyphicon glyphicon-edit"></span></button>
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
+    </tbody>
+  </table>
 </div>
 
 </body>
