@@ -25,16 +25,16 @@
 
     <div class="form-group">
       <label for="taskTitle">Task Title</label>
-      <input type="text" class="form-control" id="taskTitle" placeholder="title..." ng-model="newTask.title">
+      <input type="text" class="form-control" id="taskTitle" placeholder="title..." ng-model="taskCtrl.newTask.title">
     </div>
 
     <div class="form-group">
       <label for="taskDesc">Description</label>
-      <input class="form-control" id="taskDesc" placeholder="description.." ng-model="newTask.description">
+      <input class="form-control" id="taskDesc" placeholder="description.." ng-model="taskCtrl.newTask.description">
     </div>
 
     <div class="form-group">
-      <button class="form-control btn btn-primary" ng-click="taskCtrl.addTask(newTask)" >Add</button>
+      <button class="form-control btn btn-primary" ng-click="taskCtrl.addTask()" >Add</button>
     </div>
   </form>
 
