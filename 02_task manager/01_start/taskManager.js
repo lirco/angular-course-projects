@@ -44,6 +44,10 @@
 
     this.tasks = [];
 
+    // I don't like counters.
+    // Find out if there's a way to do this more elegant
+    this.tasksCount = 0;
+
     function task() {
       this.id =  '';
       //this.active = false;
@@ -57,12 +61,21 @@
     scope.$on('addNewTask', function(evt, newTask) {
 
       var taskToAdd = new task;
+      taskToAdd.id = self.tasksCount;
       taskToAdd.title = newTask.title;
       taskToAdd.description = newTask.description;
       self.tasks.push(taskToAdd);
+      self.tasksCount ++;
 
       scope.$broadcast('newTaskAdded', '');
-    })
+    });
+
+    this.removeTask = function(id) {
+      console.log('about to remove task ' + id);
+      console.log (this.tasks);
+      this.tasks.splice(id,1);
+      console.log (this.tasks);
+    }
 
   }
 
