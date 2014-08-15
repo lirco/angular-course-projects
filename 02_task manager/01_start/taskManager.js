@@ -71,13 +71,14 @@
     });
 
     this.removeTask = function(id) {
-      console.log('about to remove task ' + id);
-      console.log (this.tasks);
       delete this.tasks[id];
-      console.log (this.tasks);
 
       scope.$broadcast('taskDeleted', '');
-    }
+    };
+
+    scope.$on('editTaskFromTableToMain', function(evt, task) {
+      scope.$broadcast('editTaskFromMainToEditor', task);
+    })
 
   }
 
@@ -100,13 +101,24 @@
 
   function tableController(scope) {
 
+    this.editTask = function(task) {
+      scope.$emit('editTaskFromTableToMain', task);
+    }
   }
 
   function editController(scope) {
 
     this.addNewTask = function() {
       scope.$emit('addNewTask', this.newTask);
-    }
+    };
+
+    scope.$on('editTaskFromMainToEditor', function(ent, task) {
+      console.log(task)
+      /**
+       * NEED TO GO ON FROM HERE.
+       * SHOW THIS TASK ON THE EDITOR
+       */
+    })
   }
 
 
