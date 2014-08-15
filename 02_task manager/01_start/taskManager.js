@@ -42,7 +42,7 @@
 
   function mainController(scope) {
 
-    this.tasks = [];
+    this.tasks = {};
 
     // I don't like counters.
     // Find out if there's a way to do this more elegant
@@ -64,7 +64,7 @@
       taskToAdd.id = self.tasksCount;
       taskToAdd.title = newTask.title;
       taskToAdd.description = newTask.description;
-      self.tasks.push(taskToAdd);
+      self.tasks[taskToAdd.id] = taskToAdd;
       self.tasksCount ++;
 
       scope.$broadcast('newTaskAdded', '');
@@ -73,8 +73,10 @@
     this.removeTask = function(id) {
       console.log('about to remove task ' + id);
       console.log (this.tasks);
-      this.tasks.splice(id,1);
+      delete this.tasks[id];
       console.log (this.tasks);
+
+      scope.$broadcast('taskDeleted', '');
     }
 
   }
@@ -86,11 +88,14 @@
     var self = this;
 
     scope.$on('newTaskAdded', function(ent, data) {
-
       var date = new Date();
       self.logList.push(date + ' New Task Added');
-    })
+    });
 
+    scope.$on('taskDeleted', function(ent, data) {
+      var date = new Date();
+      self.logList.push(date + ' Task Deleted');
+    });
   }
 
   function tableController(scope) {
