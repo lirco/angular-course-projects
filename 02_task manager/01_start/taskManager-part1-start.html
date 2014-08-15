@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="taskApp">
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
 
     <link rel="stylesheet" href="../../components/bootstrap/dist/css/bootstrap.css"/>
+    <script src="../../components/angular/angular.js"></script>
+    <script src="taskManager.js"></script>
     <link rel="stylesheet" href="taskManager.css"/>
 
 </head>
 
-<body>
+<body ng-controller="mainController as mainCtrl">
 
 <div class="container">
 
@@ -35,17 +37,15 @@
     <div class="row">
 
         <!-- task log -->
-        <div class="col-lg-3">
-            <ul class="list-unstyled">
-                <li><samp>22/6/14 12:00 - new task added</samp></li>
-                <li><samp>23/6/14 12:05 - task completed</samp></li>
-                <li><samp>24/6/14 13:05 - task removed</samp></li>
-                <li><samp>28/6/14 13:05 - task removed</samp></li>
+        <div class="col-lg-3" ng-controller="logController as logCtrl">
+            <ul class="list-unstyled" ng-repeat="logItem in logCtrl.logList">
+                <li><samp>{{logItem}}</samp></li>
+
             </ul>
         </div> <!-- /task log -->
 
         <!-- task table -->
-        <div class="col-lg-7">
+        <div class="col-lg-7" ng-controller="tableController as tableCtrl">
             <table class="table table-striped table-bordered">
                 <thead>
                 <tr>
@@ -59,8 +59,8 @@
 
                 <tr>
                     <td class="text-center"><input class="input" type="checkbox"/></td>
-                    <td>learn angular!</td>
-                    <td>start from scratch, build your skills</td>
+                    <td>A task for example</td>
+                    <td>Add tasks and see how cool this app is! </td>
                     <td>
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-danger">
@@ -73,36 +73,20 @@
                     </td>
                 </tr>
 
-                <tr class="tr-active">
-                    <td class="text-center"><input class="input" type="checkbox" checked/></td>
-                    <td>play with controllers!</td>
-                    <td>make sure to understand whats going on</td>
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-danger">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                            <button class="btn btn-primary">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="text-center"><input class="input" type="checkbox"/></td>
-                    <td>try bootstrap</td>
-                    <td>prototype a gui is easy</td>
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-danger">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                            <button class="btn btn-primary">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </button>
-                        </div>
-                    </td>
+                <tr ng-repeat="task in mainCtrl.tasks">
+                  <td class="text-center"><input class="input" type="checkbox"/></td>
+                  <td>{{task.title}}</td>
+                  <td>{{task.description}}</td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+                      <button class="btn btn-primary">
+                        <span class="glyphicon glyphicon-edit"></span>
+                      </button>
+                    </div>
+                  </td>
                 </tr>
 
                 </tbody>
@@ -110,20 +94,20 @@
         </div><!-- /task table -->
 
         <!-- task form -->
-        <div class="col-lg-2">
+        <div class="col-lg-2" ng-controller="editController as editCtrl">
 
             <form class="form-horizontal">
 
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Title">
+                    <input type="text" class="form-control" placeholder="Title" ng-model="editCtrl.newTask.title">
                 </div>
 
                 <div class="form-group">
-                    <textarea rows="6" class="form-control" placeholder="Description"></textarea>
+                    <textarea rows="6" class="form-control" placeholder="Description" ng-model="editCtrl.newTask.description"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <button class="form-control btn btn-primary">Add</button>
+                    <button class="form-control btn btn-primary" ng-click="editCtrl.addNewTask()">Add</button>
                 </div>
             </form>
         </div><!-- /task form -->

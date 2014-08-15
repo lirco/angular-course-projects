@@ -40,78 +40,64 @@
 
 ( function () {
 
-  /**
-   * mainController is responsible of:
-   * 1. Holding the array of tasks
-   * 2. Holding the model for a single task (which is active)
-   * 3. Adding a new task OR Changing data of existing task - on emit from taskEditController
-   * 4.
-   *
-   * @param scope
-   */
   function mainController(scope) {
 
-    this.Tasks = [];
+    this.tasks = [];
 
-    this.Task = {
-      "id": '',
-      "active": false,
-      "title": '',
-      "description": '',
-      "done": false
-    };
-
-    this.addTask = function() {
-      //scope.on('addTask', )
-
+    function task() {
+      this.id =  '';
+      //this.active = false;
+      this.title = '';
+      this.description = '';
+      this.done = false;
     }
+
+    var self = this;
+
+    scope.$on('addNewTask', function(evt, newTask) {
+
+      var taskToAdd = new task;
+      taskToAdd.title = newTask.title;
+      taskToAdd.description = newTask.description;
+      self.tasks.push(taskToAdd);
+
+      scope.$broadcast('newTaskAdded', '');
+    })
+
   }
 
-  /**
-   * logController is responsible of:
-   * 1. Adding a line to the log for every new action
-   * 2. Holding the scope of logs that will be shown in it's view
-   *
-   * @param scope
-   */
   function logController(scope) {
 
     this.logList = [];
 
-    this.addLogLine = function() {
+    var self = this;
 
-      //var date = new Date();
+    scope.$on('newTaskAdded', function(ent, data) {
 
+      var date = new Date();
+      self.logList.push(date + ' New Task Added');
+    })
+
+  }
+
+  function tableController(scope) {
+
+  }
+
+  function editController(scope) {
+
+    this.addNewTask = function() {
+      scope.$emit('addNewTask', this.newTask);
     }
   }
 
-  /**
-   * tasksListController is responsible of:
-   * 1. Holding the scope for showing the list of tasks (inherited from mainController)
-   * 2. Emitting an event for editing a task to mainController
-   * 3. Emitting an event for deleting a task to mainController
-   * 4. Emitting an event for done task to mainController
-   *
-   * @param scope
-   */
-  function tasksListController(scope) {
 
-  }
-
-  /**
-   * taskEditController is responsible of:
-   * 1. Holding a model for newTask to be added
-   * 1. Adding a new task by Emitting the event with task data to mainController
-   * 2. Catching an event of broadcast from mainController on editing task with task to edit as data
-   * 3. Show the task to edit in the form
-   * 4.
-   */
-
-
-  angular.module('TaskApp',[])
+  angular.module('taskApp',[])
     .controller('mainController', ['$scope', mainController])
     .controller('logController', ['$scope', logController])
-    .controller('tasksListController', ['$scope', tasksListController]);
+    .controller('tableController', ['$scope', tableController])
+    .controller('editController', ['$scope', editController])
+
 
 
 
