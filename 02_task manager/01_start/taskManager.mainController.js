@@ -3,8 +3,9 @@
  *
  * 1. Add new task:
  *  ng-model on editCtrl
- *  emit on click, only title and description emitted.
- *  catch the title and desc of new task on mainCtrl, create new task object with rest of params and add to array
+ *  on click, only title and description emitted by editCtrl
+ *  catch the title and description of new task on mainCtrl
+ *  create new task object with rest of params
  *  broadcast to logCtrl
  *  catch on logCtrl and add line to log
  *
@@ -15,13 +16,13 @@
  *  user changes
  *  click on add emits new data by ediCtrl
  *  catch on mainCtrl
- *  replace task in array by id of the task
+ *  replace task in Tasks object list by id of the task
  *  broadcast to logCtrl
  *  catch on logCtrl and add line to log
  *
  * 3. Delete task:
- *  click on listCtrl emits with task data + action=delete
- *  catch data on mainCtrl
+ *  click invokes function that emits deleteTask with task id
+ *  catch on mainCtrl
  *  delete task from array by id of the task
  *  broadcast to logCtrl
  *  catch on logCtrl and add line to log
@@ -49,8 +50,7 @@
 
     this.tasks = {};
 
-    // I don't like counters.
-    // Find out if there's a way to do this more elegant
+    //helps defining the id of a task
     this.tasksCount = 0;
 
     //flag for invoking the showHide function
@@ -105,8 +105,7 @@
       scope.$broadcast('taskEdited', '');
     });
 
-    //if checkbox clicked change task.done state
-    //in case task.done is true, send a message to log ctrl
+    //if checkbox clicked change task.done state, and if true broadcast to log
     this.taskDone = function(task) {
       task.done = !task.done;
       if (task.done) {
@@ -114,17 +113,16 @@
       }
     };
 
-    //Show/hide completed - better to do it with filter...
     //Use scope.$watch to watch the flag in order to invoke function
     this.hideShowCompleted = function() {
       this.hideCompleted = !this.hideCompleted;
     };
 
-    scope.$watch('mainCtrl.hideCompleted', function(flag) {
+    scope.$watch('mainCtrl.hideCompleted', function(ShowHideflag) {
       var key;
       for (key in self.tasks) {
         if (self.tasks[key].done) {
-          self.tasks[key].hideMe = flag;
+          self.tasks[key].hideMe = ShowHideflag;
         }
       }
     });
