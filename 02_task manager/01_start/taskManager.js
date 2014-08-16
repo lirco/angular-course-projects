@@ -36,6 +36,9 @@
  *  each change a for loop changes the showMe property of done tasks only
  *  ng-hide hides these done tasks
  *
+ * 6. Clear log:
+ * on click mainController $broadcast to logController
+ * logController catches abd deletes the array content
  */
 
 
@@ -43,7 +46,6 @@
 
   /**
    * mainController
-   *
    * @param scope
    */
   function mainController(scope) {
@@ -106,24 +108,29 @@
       scope.$broadcast('taskEdited', '');
     });
 
+    this.hideShowCompleted = function() {
+      this.hideCompleted = !this.hideCompleted;
+    };
+
     //Show/hide completed - better to do it with filter...
     //USE SCOPE.WATCH - watch the flag in order to invoke this function
-     scope.$watch('mainCtrl.hideCompleted', function(flag) {
-      console.log('hide completed: ' + flag);
+    scope.$watch('mainCtrl.hideCompleted', function(flag) {
       var key;
       for (key in self.tasks) {
         if (self.tasks[key].done) {
           self.tasks[key].hideMe = flag;
         }
       }
-    })
+    });
 
+    this.clearLog = function() {
+      scope.$broadcast('clearLog','');
+    }
   }
 
 
   /**
    * logController
-   *
    * @param scope
    */
   function logController(scope) {
@@ -134,24 +141,27 @@
 
     scope.$on('newTaskAdded', function(ent, data) {
       var date = new Date();
-      self.logList.push(date + ' New Task Added');
+      self.logList.unshift(date + ' New Task Added');
     });
 
     scope.$on('taskDeleted', function(ent, data) {
       var date = new Date();
-      self.logList.push(date + ' Task Deleted');
+      self.logList.unshift(date + ' Task Deleted');
     });
 
     scope.$on('taskEdited', function(ent, data) {
       var date = new Date();
-      self.logList.push(date + ' Task Edited');
+      self.logList.unshift(date + ' Task Edited');
+    });
+
+    scope.$on('clearLog', function(ent, data) {
+      self.logList = [];
     });
   }
 
 
   /**
    * tableController
-   *
    * @param scope
    */
   function tableController(scope) {
@@ -186,7 +196,6 @@
     };
 
     scope.$on('editTaskFromMainToEditor', function(ent, task) {
-      console.log(task);
       self.newTask = task;
 
     })
