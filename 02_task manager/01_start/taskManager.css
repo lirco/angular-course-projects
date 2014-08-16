@@ -2,3 +2,7 @@
     background: lightgreen;
     text-decoration: line-through;
 }
+
+.strike {
+  text-decoration: line-through;
+}
