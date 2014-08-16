@@ -27,13 +27,14 @@
  *  catch on logCtrl and add line to log
  *
  * 4. Mark task as done:
- *  click on listCtrl emits with task data + action=done
- *  catch data on mainCtrl
- *  mainCtrl changes task 'done' flag to true
- *  mainCtrl adds the task to done array (not so efficient to open a new array - resolve later)
- *  broadcast to logCtrl
- *  catch on logCtrl and add line to log
+ *  click on tableCtrl checkbox changes task property .done to true/false
+ *  .done property of the task changes the ng-class mode.
  *
+ * 5. Show/Hide all done tasks:
+ *  click on the button changes the T/F flag on mainCtrl scope
+ *  a $watch catches the change on this flag
+ *  each change a for loop changes the showMe property of done tasks only
+ *  ng-hide hides these done tasks
  *
  */
 
@@ -111,7 +112,9 @@
       console.log('hide completed: ' + flag);
       var key;
       for (key in self.tasks) {
-        self.tasks[key].hideMe = flag;
+        if (self.tasks[key].done) {
+          self.tasks[key].hideMe = flag;
+        }
       }
     })
 
