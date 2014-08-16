@@ -74,7 +74,7 @@
                 </tr>
 
                 <tr ng-repeat="task in mainCtrl.tasks" ng-hide="task.hideMe">
-                  <td class="text-center"><input class="input" type="checkbox" ng-model="task.done"/></td>
+                  <td class="text-center"><input class="input" type="checkbox" ng-click="mainCtrl.taskDone(task)"/></td>
                   <td ng-class="{strike: task.done}">{{task.title}}</td>
                   <td ng-class="{strike: task.done}">{{task.description}}</td>
                   <td>

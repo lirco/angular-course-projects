@@ -108,12 +108,22 @@
       scope.$broadcast('taskEdited', '');
     });
 
+    //if checkbox clicked change task.done state
+    //in case task.done is true, send a message to log ctrl
+    this.taskDone = function(task) {
+      task.done = !task.done;
+      if (task.done) {
+        console.log(task.done);
+        scope.$broadcast('doneTask','');
+      }
+    };
+
+    //Show/hide completed - better to do it with filter...
+    //Use scope.$watch to watch the flag in order to invoke function
     this.hideShowCompleted = function() {
       this.hideCompleted = !this.hideCompleted;
     };
 
-    //Show/hide completed - better to do it with filter...
-    //USE SCOPE.WATCH - watch the flag in order to invoke this function
     scope.$watch('mainCtrl.hideCompleted', function(flag) {
       var key;
       for (key in self.tasks) {
@@ -152,6 +162,11 @@
     scope.$on('taskEdited', function(ent, data) {
       var date = new Date();
       self.logList.unshift(date + ' Task Edited');
+    });
+
+    scope.$on('doneTask', function(ent, data) {
+      var date = new Date();
+      self.logList.unshift(date + ' Task Done');
     });
 
     scope.$on('clearLog', function(ent, data) {
