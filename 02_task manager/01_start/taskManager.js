@@ -27,8 +27,9 @@
  *  catch on logCtrl and add line to log
  *
  * 4. Mark task as done:
- *  click on tableCtrl checkbox changes task property .done to true/false
- *  .done property of the task changes the ng-class mode.
+ *  click on tableCtrl checkbox invokes function
+ *  this function changes task.done state and broadcast to log
+ *  .done property of the task changes the ng-class mode
  *
  * 5. Show/Hide all done tasks:
  *  click on the button changes the T/F flag on mainCtrl scope
@@ -113,7 +114,6 @@
     this.taskDone = function(task) {
       task.done = !task.done;
       if (task.done) {
-        console.log(task.done);
         scope.$broadcast('doneTask','');
       }
     };
@@ -223,10 +223,6 @@
     .controller('mainController', ['$scope', mainController])
     .controller('logController', ['$scope', logController])
     .controller('tableController', ['$scope', tableController])
-    .controller('editController', ['$scope', editController])
-
-
-
-
+    .controller('editController', ['$scope', editController]);
 
 }());
