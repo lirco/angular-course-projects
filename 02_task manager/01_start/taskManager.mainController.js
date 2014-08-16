@@ -45,10 +45,6 @@
 
 ( function () {
 
-  /**
-   * mainController
-   * @param scope
-   */
   function mainController(scope) {
 
     this.tasks = {};
@@ -138,91 +134,7 @@
     }
   }
 
-
-  /**
-   * logController
-   * @param scope
-   */
-  function logController(scope) {
-
-    this.logList = [];
-
-    var self = this;
-
-    scope.$on('newTaskAdded', function(ent, data) {
-      var date = new Date();
-      self.logList.unshift(date + ' New Task Added');
-    });
-
-    scope.$on('taskDeleted', function(ent, data) {
-      var date = new Date();
-      self.logList.unshift(date + ' Task Deleted');
-    });
-
-    scope.$on('taskEdited', function(ent, data) {
-      var date = new Date();
-      self.logList.unshift(date + ' Task Edited');
-    });
-
-    scope.$on('doneTask', function(ent, data) {
-      var date = new Date();
-      self.logList.unshift(date + ' Task Done');
-    });
-
-    scope.$on('clearLog', function(ent, data) {
-      self.logList = [];
-    });
-  }
-
-
-  /**
-   * tableController
-   * @param scope
-   */
-  function tableController(scope) {
-
-    this.editTask = function(task) {
-      task.type = 'edit';
-      scope.$emit('editTaskFromTableToMain', task);
-    }
-  }
-
-
-  /**
-   * editController
-   * @param scope
-   */
-  function editController(scope) {
-
-    var self = this;
-
-    // If there is no type for the task, it means that it is a new one.
-    // That's because newTask only contains title and description before it goes through main controller,
-    // where the full task with ID and other flags is created and inserted into tasks object
-    this.addTask = function() {
-      if (!this.newTask.type) {
-        scope.$emit('addNewTask', this.newTask);
-        this.newTask = '';
-      }
-      else {
-        scope.$emit('editTaskFromEditorToMain', this.newTask);
-        this.newTask = '';
-      }
-    };
-
-    scope.$on('editTaskFromMainToEditor', function(ent, task) {
-      self.newTask = task;
-
-    })
-  }
-
-  /**
-   * defining the App
-   */
   angular.module('taskApp',[])
     .controller('mainController', ['$scope', mainController])
-    .controller('logController', ['$scope', logController])
-    .controller('tableController', ['$scope', tableController])
-    .controller('editController', ['$scope', editController]);
 
 }());
