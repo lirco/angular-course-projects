@@ -3,13 +3,13 @@
  *
  * 1. Add new task:
  *  ng-model on editCtrl
- *  emit on click (and clear the new task)
- *  catch on mainCtrl and add to array
+ *  emit on click, only title and description emitted.
+ *  catch the title and desc of new task on mainCtrl, create new task object with rest of params and add to array
  *  broadcast to logCtrl
  *  catch on logCtrl and add line to log
  *
  * 2. Edit existing task:
- *  click on listCtrl emits with task data + action=edit
+ *  click on tableCtrl emits with task data with task.type=edit
  *  catch data on mainCtrl
  *  broadcast with data to editCtrl
  *  user changes
@@ -40,6 +40,11 @@
 
 ( function () {
 
+  /**
+   * mainController
+   *
+   * @param scope
+   */
   function mainController(scope) {
 
     this.tasks = {};
@@ -48,9 +53,10 @@
     // Find out if there's a way to do this more elegant
     this.tasksCount = 0;
 
-    function task() {
+    // Task model object
+    function Task() {
       this.id =  '';
-      //this.active = false;
+      this.type = 'new';
       this.title = '';
       this.description = '';
       this.done = false;
@@ -58,9 +64,13 @@
 
     var self = this;
 
+    // receiving a new task to add
+    // Creates a new instance of Task (with type=new),
+    // Creating a new id for the task (with the tasks counter),
+    // filling data into task to add and adding to list of tasks
     scope.$on('addNewTask', function(evt, newTask) {
 
-      var taskToAdd = new task;
+      var taskToAdd = new Task;
       taskToAdd.id = self.tasksCount;
       taskToAdd.title = newTask.title;
       taskToAdd.description = newTask.description;
@@ -70,18 +80,35 @@
       scope.$broadcast('newTaskAdded', '');
     });
 
+    // Removing a task by it's id.
     this.removeTask = function(id) {
       delete this.tasks[id];
 
       scope.$broadcast('taskDeleted', '');
     };
 
+    // Editing a task - Before user changes
+    // receive event from the table, with task.type=edit
     scope.$on('editTaskFromTableToMain', function(evt, task) {
       scope.$broadcast('editTaskFromMainToEditor', task);
+    });
+
+    // Editing a task - After user changes
+    // Add to tasks list by id of the task - overwrite the original
+    scope.$on('editTaskFromEditorToMain', function(evt, task) {
+      self.tasks[task.id] = task;
+
+      scope.$broadcast('taskEdited', '');
     })
 
   }
 
+
+  /**
+   * logController
+   *
+   * @param scope
+   */
   function logController(scope) {
 
     this.logList = [];
@@ -97,31 +124,60 @@
       var date = new Date();
       self.logList.push(date + ' Task Deleted');
     });
+
+    scope.$on('taskEdited', function(ent, data) {
+      var date = new Date();
+      self.logList.push(date + ' Task Edited');
+    });
   }
 
+
+  /**
+   * tableController
+   *
+   * @param scope
+   */
   function tableController(scope) {
 
     this.editTask = function(task) {
+      task.type = 'edit';
       scope.$emit('editTaskFromTableToMain', task);
     }
   }
 
+
+  /**
+   * editController
+   * @param scope
+   */
   function editController(scope) {
 
+    var self = this;
+
+    // If there is no type for the task, it means that it is a new one.
+    // That's because newTask only contains title and description before it goes through main controller,
+    // where the full task with ID and other flags is created and inserted into tasks object
     this.addNewTask = function() {
-      scope.$emit('addNewTask', this.newTask);
+      if (!this.newTask.type) {
+        scope.$emit('addNewTask', this.newTask);
+        this.newTask = '';
+      }
+      else {
+        scope.$emit('editTaskFromEditorToMain', this.newTask);
+        this.newTask = '';
+      }
     };
 
     scope.$on('editTaskFromMainToEditor', function(ent, task) {
-      console.log(task)
-      /**
-       * NEED TO GO ON FROM HERE.
-       * SHOW THIS TASK ON THE EDITOR
-       */
+      console.log(task);
+      self.newTask = task;
+
     })
   }
 
-
+  /**
+   * defining the App
+   */
   angular.module('taskApp',[])
     .controller('mainController', ['$scope', mainController])
     .controller('logController', ['$scope', logController])
