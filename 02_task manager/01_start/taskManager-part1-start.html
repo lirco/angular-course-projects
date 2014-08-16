@@ -27,7 +27,7 @@
     <section class="row">
         <div class="panel panel-default">
             <div class="panel-body">
-                <button class="btn btn-default">show/hide completed</button>
+                <button class="btn btn-default" ng-click="mainCtrl.hideCompleted = !mainCtrl.hideCompleted">show/hide completed</button>
                 <button class="btn btn-default">Clear Log</button>
 
             </div>
@@ -73,7 +73,7 @@
                     </td>
                 </tr>
 
-                <tr ng-repeat="task in mainCtrl.tasks">
+                <tr ng-repeat="task in mainCtrl.tasks" ng-hide="task.hideMe">
                   <td class="text-center"><input class="input" type="checkbox" ng-model="task.done"/></td>
                   <td ng-class="{strike: task.done}">{{task.title}}</td>
                   <td ng-class="{strike: task.done}">{{task.description}}</td>

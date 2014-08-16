@@ -53,6 +53,9 @@
     // Find out if there's a way to do this more elegant
     this.tasksCount = 0;
 
+    //flag for invoking the showHide function
+    this.hideCompleted = false;
+
     // Task model object
     function Task() {
       this.id =  '';
@@ -60,6 +63,7 @@
       this.title = '';
       this.description = '';
       this.done = false;
+      this.hideMe = false;
     }
 
     var self = this;
@@ -99,6 +103,16 @@
       self.tasks[task.id] = task;
 
       scope.$broadcast('taskEdited', '');
+    });
+
+    //Show/hide completed - better to do it with filter...
+    //USE SCOPE.WATCH - watch the flag in order to invoke this function
+     scope.$watch('mainCtrl.hideCompleted', function(flag) {
+      console.log('hide completed: ' + flag);
+      var key;
+      for (key in self.tasks) {
+        self.tasks[key].hideMe = flag;
+      }
     })
 
   }
