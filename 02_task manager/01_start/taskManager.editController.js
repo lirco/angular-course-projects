@@ -8,13 +8,15 @@
     // That's because newTask only contains title and description before it goes through main controller,
     // where the full task with ID and other flags is created and inserted into tasks object
     this.addTask = function() {
-      if (!this.newTask.type) {
-        scope.$emit('addNewTask', this.newTask);
-        this.newTask = '';
-      }
-      else {
-        scope.$emit('editTaskFromEditorToMain', this.newTask);
-        this.newTask = '';
+      if (this.newTask.title || this.newTask.description) {
+        if (!this.newTask.type) {
+            scope.$emit('addNewTask', this.newTask);
+            this.newTask = '';
+        }
+        else {
+            scope.$emit('editTaskFromEditorToMain', this.newTask);
+            this.newTask = '';
+        }
       }
     };
 
