@@ -9,7 +9,7 @@
     <script src="taskManager.mainController.js"></script>
     <script src="taskManager.tableController.js"></script>
     <script src="taskManager.logController.js"></script>
-    <script src="taskManager.editController.js"></script>
+    <script src="taskManager.formController.js"></script>
     <link rel="stylesheet" href="taskManager.css"/>
 
 </head>
@@ -76,16 +76,16 @@
                     </td>
                 </tr>
 
-                <tr ng-repeat="task in mainCtrl.tasks" ng-hide="task.hideMe">
-                  <td class="text-center"><input class="input" type="checkbox" ng-click="mainCtrl.taskDone(task)"/></td>
+                <tr ng-repeat="task in taskAppState.tasks" ng-hide="task.done && taskAppState.hideCompleted">
+                  <td class="text-center"><input class="input" type="checkbox" ng-click="tableCtrl.taskDone(task.id)"/></td>
                   <td ng-class="{strike: task.done}">{{task.title}}</td>
                   <td ng-class="{strike: task.done}">{{task.description}}</td>
                   <td>
                     <div class="btn-group btn-group-sm">
-                      <button class="btn btn-danger" ng-click="mainCtrl.removeTask(task.id)">
+                      <button class="btn btn-danger" ng-click="tableCtrl.removeTask(task.id)">
                         <span class="glyphicon glyphicon-remove"></span>
                       </button>
-                      <button class="btn btn-primary" ng-click="tableCtrl.editTask(task)">
+                      <button class="btn btn-primary" ng-click="tableCtrl.editTask(task.id)">
                         <span class="glyphicon glyphicon-edit"></span>
                       </button>
                     </div>
@@ -97,20 +97,20 @@
         </div><!-- /task table -->
 
         <!-- task form -->
-        <div class="col-lg-2" ng-controller="editController as editCtrl">
+        <div class="col-lg-2" ng-controller="formController as formCtrl">
 
             <form class="form-horizontal">
 
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Title" ng-model="editCtrl.newTask.title">
+                    <input type="text" class="form-control" placeholder="Title" ng-model="taskAppState.activeTask.title">
                 </div>
 
                 <div class="form-group">
-                    <textarea rows="6" class="form-control" placeholder="Description" ng-model="editCtrl.newTask.description"></textarea>
+                    <textarea rows="6" class="form-control" placeholder="Description" ng-model="taskAppState.activeTask.description"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <button class="form-control btn btn-primary" ng-click="editCtrl.addTask()">Add</button>
+                    <button class="form-control btn btn-primary" ng-click="formCtrl.addTask(taskAppState.activeTask)">Add</button>
                 </div>
             </form>
         </div><!-- /task form -->

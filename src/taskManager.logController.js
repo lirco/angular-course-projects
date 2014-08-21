@@ -6,27 +6,12 @@
 
     var self = this;
 
-    scope.$on('newTaskAdded', function(ent, data) {
+    scope.$on('logEvent:userAction', function (evt, data) {
       var date = new Date();
-      self.logList.unshift(date + ' New Task Added');
+      self.logList.unshift(date + data);
     });
 
-    scope.$on('taskDeleted', function(ent, data) {
-      var date = new Date();
-      self.logList.unshift(date + ' Task Deleted');
-    });
-
-    scope.$on('taskEdited', function(ent, data) {
-      var date = new Date();
-      self.logList.unshift(date + ' Task Edited');
-    });
-
-    scope.$on('doneTask', function(ent, data) {
-      var date = new Date();
-      self.logList.unshift(date + ' Task Done');
-    });
-
-    scope.$on('clearLog', function(ent, data) {
+    scope.$on('logEvent:clearLog', function() {
       self.logList = [];
     });
   }
