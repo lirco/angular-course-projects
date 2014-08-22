@@ -8,7 +8,6 @@
       this.title = '';
       this.description = '';
       this.done = false;
-      this.hideMe = false;
     }
 
     this.addTask = function(newTask) {

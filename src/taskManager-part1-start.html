@@ -6,11 +6,8 @@
 
     <link rel="stylesheet" href="../components/bootstrap/dist/css/bootstrap.css"/>
     <script src="../components/angular/angular.js"></script>
-    <script src="taskManager.mainController.js"></script>
-    <script src="taskManager.tableController.js"></script>
-    <script src="taskManager.logController.js"></script>
-    <script src="taskManager.formController.js"></script>
-    <link rel="stylesheet" href="taskManager.css"/>
+    <script src="../dist/app.js"></script>
+    <link rel="stylesheet" href="css/taskManager.css"/>
 
 </head>
 
@@ -27,11 +24,11 @@
     </header>
 
     <!-- action bar -->
-    <section class="row">
+    <section class="row" ng-controller="barController as barCtrl">
         <div class="panel panel-default">
             <div class="panel-body">
-                <button class="btn btn-default" ng-click="mainCtrl.hideShowCompleted()">show/hide completed</button>
-                <button class="btn btn-default" ng-click="mainCtrl.clearLog()">Clear Log</button>
+                <button class="btn btn-default" ng-click="barCtrl.hideShowCompleted()">show/hide completed</button>
+                <button class="btn btn-default" ng-click="barCtrl.clearLog()">Clear Log</button>
 
             </div>
         </div>
