@@ -124,7 +124,6 @@
 
     this.hideShowCompleted = function() {
       scope.taskAppState.hideCompleted = !scope.taskAppState.hideCompleted;
-      console.log(scope.taskAppState.hideCompleted);
     };
 
     this.clearLog = function() {
