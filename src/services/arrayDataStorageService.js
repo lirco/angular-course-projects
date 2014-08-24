@@ -16,7 +16,6 @@
       data.push(newData);
       data = JSON.stringify(data);
       localStorage.setItem(key, data);
-
     };
 
     this.update = function(key, oldVal, newVal) {
@@ -24,7 +23,6 @@
       var index = content.indexOf(oldVal);
       content.splice(index,1,newVal);
       this.replace(key, content)
-
     };
 
     this.replace = function(key, newVal) {
@@ -39,7 +37,6 @@
     this.remove = function(key, data) {
       var content = this.get(key);
       var index = content.indexOf(data);
-      console.log(index);
       content.splice(index,1);
       localStorage.setItem(key, JSON.stringify(content));
     };
@@ -47,11 +44,6 @@
     this.clear = function(key) {
       localStorage.removeItem(key);
     };
-
-    this.updateStr = function(key, newData) {
-      localStorage.setItem(key, newData);
-    };
-
 
   }
 
