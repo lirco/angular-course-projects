@@ -19,41 +19,43 @@
 
     };
 
-    this.updateStr = function(key, newData) {
-      localStorage.setItem(key, newData);
+    this.update = function(key, oldVal, newVal) {
+      var content = this.get(key);
+      var index = content.indexOf(oldVal);
+      content.splice(index,1,newVal);
+      this.replace(key, content)
+
     };
 
-    this.update = function(key, id, newVal) {
-
-      var content = this.get(key);
-      content[id] = newVal;
-      content = JSON.stringify(content);
-      localStorage.setItem(key, content);
-      return content;
+    this.replace = function(key, newVal) {
+      localStorage.removeItem(key);
+      localStorage.setItem(key, JSON.stringify(newVal));
     };
 
     this.get = function(key) {
       return JSON.parse(localStorage.getItem(key))
     };
 
-    this.remove = function(key, id) {
+    this.remove = function(key, data) {
       var content = this.get(key);
-      content.splice(id,1)
-
-
-      content = JSON.stringify(content);
-      localStorage.setItem(key, content);
-      return content;
+      var index = content.indexOf(data);
+      console.log(index);
+      content.splice(index,1);
+      localStorage.setItem(key, JSON.stringify(content));
     };
 
     this.clear = function(key) {
       localStorage.removeItem(key);
     };
 
+    this.updateStr = function(key, newData) {
+      localStorage.setItem(key, newData);
+    };
+
 
   }
 
   angular.module('taskApp')
-    .service('DataStorageService', dataStorage)
+    .service('dataStorageService', dataStorage)
 
 }());

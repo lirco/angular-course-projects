@@ -3,18 +3,21 @@
 }());
 (function () {
 
-  function formController(scope) {
+  function formController(scope, dataStorage) {
 
     this.addTask = function (task) {
+      var newTask = {
+        title: task.title,
+        description: task.description,
+        done: false
+      };
       if (scope.taskAppState.tasks.indexOf(task) == -1) {
-        scope.taskAppState.tasks.push({
-          title: task.title,
-          description: task.description,
-          done: false
-        });
+        scope.taskAppState.tasks.push(newTask);
+        dataStorage.set('tasks', newTask);
         scope.$emit('taskAppEvent', 'logEvent:userAction', 'New Task Added!');
       } else {
         scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task has been updated');
+        dataStorage.update('tasks', scope.taskAppState.taskToUpdate, newTask)
       }
       scope.taskAppState.activeTask = {};
     };
@@ -22,7 +25,7 @@
   }
 
   angular.module('taskApp')
-    .controller('formController', ['$scope', formController])
+    .controller('formController', ['$scope', 'dataStorageService', formController])
 
 }());
 ( function() {
@@ -50,7 +53,7 @@
   }
 
   angular.module('taskApp')
-    .controller('logController', ['$scope', 'DataStorageService', logController])
+    .controller('logController', ['$scope', 'dataStorageService', logController])
 
 
 }());
@@ -62,6 +65,7 @@
     scope.taskAppState = {
       'tasks': [],
       'activeTask': {},
+      'taskToUpdate': {},
       'hideCompleted': false   
     };
 
@@ -79,14 +83,17 @@
 }());
 ( function () {
 
-  function tableController(scope) {
+  function tableController(scope, dataStorage) {
 
     this.editTask = function(task) {
+      //this is a temporary walk-around
+      scope.taskAppState.taskToUpdate = {description: task.description, done: task.done, title: task.title};
       scope.taskAppState.activeTask = scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)];
     };
 
     this.removeTask = function(task) {
       scope.taskAppState.tasks.splice(scope.taskAppState.tasks.indexOf(task), 1);
+      dataStorage.remove('tasks', task);
       scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Deleted!');
     };
 
@@ -102,7 +109,7 @@
 
 
   angular.module('taskApp')
-    .controller('tableController', ['$scope', tableController])
+    .controller('tableController', ['$scope', 'dataStorageService', tableController])
 
 }());
 (function () {
@@ -143,41 +150,43 @@
 
     };
 
-    this.updateStr = function(key, newData) {
-      localStorage.setItem(key, newData);
+    this.update = function(key, oldVal, newVal) {
+      var content = this.get(key);
+      var index = content.indexOf(oldVal);
+      content.splice(index,1,newVal);
+      this.replace(key, content)
+
     };
 
-    this.update = function(key, id, newVal) {
-
-      var content = this.get(key);
-      content[id] = newVal;
-      content = JSON.stringify(content);
-      localStorage.setItem(key, content);
-      return content;
+    this.replace = function(key, newVal) {
+      localStorage.removeItem(key);
+      localStorage.setItem(key, JSON.stringify(newVal));
     };
 
     this.get = function(key) {
       return JSON.parse(localStorage.getItem(key))
     };
 
-    this.remove = function(key, id) {
+    this.remove = function(key, data) {
       var content = this.get(key);
-      content.splice(id,1)
-
-
-      content = JSON.stringify(content);
-      localStorage.setItem(key, content);
-      return content;
+      var index = content.indexOf(data);
+      console.log(index);
+      content.splice(index,1);
+      localStorage.setItem(key, JSON.stringify(content));
     };
 
     this.clear = function(key) {
       localStorage.removeItem(key);
     };
 
+    this.updateStr = function(key, newData) {
+      localStorage.setItem(key, newData);
+    };
+
 
   }
 
   angular.module('taskApp')
-    .service('DataStorageService', dataStorage)
+    .service('dataStorageService', dataStorage)
 
 }());

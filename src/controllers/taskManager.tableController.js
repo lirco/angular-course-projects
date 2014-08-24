@@ -1,13 +1,16 @@
 ( function () {
 
-  function tableController(scope) {
+  function tableController(scope, dataStorage) {
 
     this.editTask = function(task) {
+      //this is a temporary walk-around
+      scope.taskAppState.taskToUpdate = {description: task.description, done: task.done, title: task.title};
       scope.taskAppState.activeTask = scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)];
     };
 
     this.removeTask = function(task) {
       scope.taskAppState.tasks.splice(scope.taskAppState.tasks.indexOf(task), 1);
+      dataStorage.remove('tasks', task);
       scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Deleted!');
     };
 
@@ -23,6 +26,6 @@
 
 
   angular.module('taskApp')
-    .controller('tableController', ['$scope', tableController])
+    .controller('tableController', ['$scope', 'dataStorageService', tableController])
 
 }());

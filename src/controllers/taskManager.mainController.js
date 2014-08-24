@@ -6,6 +6,7 @@
     scope.taskAppState = {
       'tasks': [],
       'activeTask': {},
+      'taskToUpdate': {},
       'hideCompleted': false   
     };
 

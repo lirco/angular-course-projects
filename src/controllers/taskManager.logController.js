@@ -23,7 +23,7 @@
   }
 
   angular.module('taskApp')
-    .controller('logController', ['$scope', 'DataStorageService', logController])
+    .controller('logController', ['$scope', 'dataStorageService', logController])
 
 
 }());
