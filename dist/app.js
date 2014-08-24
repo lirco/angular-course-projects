@@ -46,7 +46,7 @@
 }());
 ( function() {
 
-  function logController(scope) {
+  function logController(scope, dataStorage) {
 
     this.logList = [];
 
@@ -54,16 +54,23 @@
 
     scope.$on('logEvent:userAction', function (evt, data) {
       var date = new Date();
-      self.logList.unshift(date + data);
+      data = date + data;
+      dataStorage.set('log', data);
+
+      //isn't there an async problem here?
+      //dataStorage.set should be written with a callback function!
+      self.logList = dataStorage.get('log');
+
     });
 
     scope.$on('logEvent:clearLog', function() {
       self.logList = [];
+      dataStorage.remove('log');
     });
   }
 
   angular.module('taskApp')
-    .controller('logController', ['$scope', logController])
+    .controller('logController', ['$scope', 'dataStorageService', logController])
 
 
 }());
@@ -133,5 +140,43 @@
 
   angular.module('taskApp')
     .controller('barController', ['$scope', barController])
+
+}());
+
+(function () {
+
+  function dataStorage() {
+
+    //make this an object with key:value pairs.
+
+    //Shouldn't this be with a callback function??
+    this.set = function(key, newData) {
+
+      var data = localStorage.getItem(key);
+
+      if (data) {
+        data = JSON.parse(data);
+      }
+      else {
+        data = [];
+      }
+      data.push(newData);
+      data = JSON.stringify(data);
+      localStorage.setItem(key, data);
+
+    };
+
+    this.get = function(key) {
+      return JSON.parse(localStorage.getItem(key))
+    };
+
+    this.remove = function(key) {
+      localStorage.removeItem(key);
+    };
+
+  }
+
+  angular.module('taskApp')
+    .service('dataStorageService', dataStorage)
 
 }());
