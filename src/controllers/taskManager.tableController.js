@@ -3,8 +3,7 @@
   function tableController(scope, dataStorage) {
 
     this.editTask = function(task) {
-      //this is a temporary walk-around
-      scope.taskAppState.taskToUpdate = {description: task.description, done: task.done, title: task.title};
+      scope.taskAppState.taskToUpdate = task;
       scope.taskAppState.activeTask = scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)];
     };
 
