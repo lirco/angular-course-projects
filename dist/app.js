@@ -1,9 +1,33 @@
 (function () {
+
+  function logConfig($provide) {
+    $provide.decorator('$log', function ($delegate) {
+      // Keep track of the original debug method, we'll need it later.
+      var origDebug = $delegate.debug;
+      /*
+       * Intercept the call to $log.debug() so we can add on
+       * our enhancement. We're going to add on a date and
+       * time stamp to the message that will be logged.
+       */
+      $delegate.debug = function () {
+        var args = [].slice.call(arguments);
+        args[0] = [new Date().toString(), ': ', args[0]].join('');
+
+        // Send on our enhanced message to the original debug method.
+        origDebug.apply(null, args)
+      };
+
+      return $delegate;
+    });
+  }
+
   angular.module('taskApp', [])
+    .config(['$provide', logConfig])
 }());
+
 (function () {
 
-  function formController(scope, dataStorage) {
+  function formController(scope, dataStorage, log) {
 
     this.addTask = function (task) {
       var newTask = {
@@ -15,9 +39,11 @@
         scope.taskAppState.tasks.push(newTask);
         dataStorage.set('tasks', newTask);
         scope.$emit('taskAppEvent', 'logEvent:userAction', 'New Task Added!');
+        log.debug('Debug on new Task Added!')
       } else {
+        dataStorage.update('tasks', scope.taskAppState.taskToUpdate, newTask);
         scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task has been updated');
-        dataStorage.update('tasks', scope.taskAppState.taskToUpdate, newTask)
+        log.debug('Debug on Task Updated!')
       }
       scope.taskAppState.activeTask = {};
     };
@@ -25,7 +51,7 @@
   }
 
   angular.module('taskApp')
-    .controller('formController', ['$scope', 'dataStorageService', formController])
+    .controller('formController', ['$scope', 'dataStorageService', '$log', formController])
 
 }());
 ( function() {
@@ -83,17 +109,19 @@
 }());
 ( function () {
 
-  function tableController(scope, dataStorage) {
+  function tableController(scope, dataStorage, log) {
 
     this.editTask = function(task) {
       scope.taskAppState.taskToUpdate = task;
       scope.taskAppState.activeTask = scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)];
+      log.debug('Debug on Edit!');
     };
 
     this.removeTask = function(task) {
       scope.taskAppState.tasks.splice(scope.taskAppState.tasks.indexOf(task), 1);
       dataStorage.remove('tasks', task);
       scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Deleted!');
+      log.debug('Debug on Delete!');
     };
 
     this.taskDone = function(task) {
@@ -101,6 +129,7 @@
       !scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done;
       if (scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done) {
         scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Done!');
+        log.debug('Debug on Done!');
       }
     };
 
@@ -108,7 +137,7 @@
 
 
   angular.module('taskApp')
-    .controller('tableController', ['$scope', 'dataStorageService', tableController])
+    .controller('tableController', ['$scope', 'dataStorageService', '$log', tableController])
 
 }());
 (function () {
@@ -181,3 +210,20 @@
     .service('dataStorageService', dataStorage)
 
 }());
+//(function () {
+//
+//  function loadFactory(dataStorage, window) {
+//
+//    this.load = function() {
+//      if (window) {
+//        this.tasksList = dataStorage.get('tasks');
+//        this.logList = dataStorage.get('log');
+//      }
+//    }
+//
+//  }
+//
+//  angular.module('taskApp')
+//    .factory('loadFactory', 'dataStorageService', '$window', loadFactory)
+//
+//}());
