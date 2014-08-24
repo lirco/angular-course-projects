@@ -74,15 +74,15 @@
                 </tr>
 
                 <tr ng-repeat="task in taskAppState.tasks" ng-hide="task.done && taskAppState.hideCompleted">
-                  <td class="text-center"><input class="input" type="checkbox" ng-click="tableCtrl.taskDone(task.id)"/></td>
+                  <td class="text-center"><input class="input" type="checkbox" ng-click="tableCtrl.taskDone(task)"/></td>
                   <td ng-class="{strike: task.done}">{{task.title}}</td>
                   <td ng-class="{strike: task.done}">{{task.description}}</td>
                   <td>
                     <div class="btn-group btn-group-sm">
-                      <button class="btn btn-danger" ng-click="tableCtrl.removeTask(task.id)">
+                      <button class="btn btn-danger" ng-click="tableCtrl.removeTask(task)">
                         <span class="glyphicon glyphicon-remove"></span>
                       </button>
-                      <button class="btn btn-primary" ng-click="tableCtrl.editTask(task.id)">
+                      <button class="btn btn-primary" ng-click="tableCtrl.editTask(task)">
                         <span class="glyphicon glyphicon-edit"></span>
                       </button>
                     </div>

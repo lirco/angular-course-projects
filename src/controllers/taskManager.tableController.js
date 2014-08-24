@@ -2,18 +2,19 @@
 
   function tableController(scope) {
 
-    this.editTask = function(id) {
-      scope.taskAppState.activeTask = scope.taskAppState.tasks[id];
+    this.editTask = function(task) {
+      scope.taskAppState.activeTask = scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)];
     };
 
-    this.removeTask = function(id) {
-      delete scope.taskAppState.tasks[id];
+    this.removeTask = function(task) {
+      scope.taskAppState.tasks.splice(scope.taskAppState.tasks.indexOf(task), 1);
       scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Deleted!');
     };
 
-    this.taskDone = function(id) {
-      scope.taskAppState.tasks[id].done = !scope.taskAppState.tasks[id].done;
-      if (scope.taskAppState.tasks[id].done) {
+    this.taskDone = function(task) {
+      scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done =
+      !scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done;
+      if (scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done) {
         scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Done!');
       }
     };

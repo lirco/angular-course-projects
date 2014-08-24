@@ -12,19 +12,18 @@
       dataStorage.set('log', data);
 
       //isn't there an async problem here?
-      //dataStorage.set should be written with a callback function!
       self.logList = dataStorage.get('log');
 
     });
 
     scope.$on('logEvent:clearLog', function() {
       self.logList = [];
-      dataStorage.remove('log');
+      dataStorage.clear('log');
     });
   }
 
   angular.module('taskApp')
-    .controller('logController', ['$scope', 'dataStorageService', logController])
+    .controller('logController', ['$scope', 'DataStorageService', logController])
 
 
 }());

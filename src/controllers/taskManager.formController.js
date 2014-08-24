@@ -10,31 +10,20 @@
       this.done = false;
     }
 
-    this.addTask = function(newTask) {
-      if (newTask.title || newTask.description) {
-
-        // add a new task
-        if (!newTask.id) {
-
-          var task = new Task();
-          task.title = newTask.title;
-          task.description = newTask.description;
-          task.id = scope.taskAppState.tasksCount;
-
-          scope.taskAppState.tasks[task.id] = task;
-          scope.taskAppState.tasksCount ++;
-          scope.taskAppState.activeTask = '';
-
-          scope.$emit('taskAppEvent', 'logEvent:userAction', 'New Task Added!');
-        }
-        //edit the existing task
-        else {
-          scope.taskAppState.tasks[newTask.id] = newTask;
-          scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Edited!');
-          scope.taskAppState.activeTask = '';
-        }
+    this.addTask = function (task) {
+      if (scope.taskAppState.tasks.indexOf(task) == -1) {
+        scope.taskAppState.tasks.push({
+          title: task.title,
+          description: task.description,
+          done: false
+        });
+        scope.$emit('taskAppEvent', 'logEvent:userAction', 'New Task Added!');
+      } else {
+        scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task has been updated');
       }
+      scope.taskAppState.activeTask = {};
     };
+
   }
 
   angular.module('taskApp')

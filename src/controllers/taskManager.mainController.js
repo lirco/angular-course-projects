@@ -4,9 +4,8 @@
   function mainController(scope) {
 
     scope.taskAppState = {
-      'tasks': {},
+      'tasks': [],
       'activeTask': {},
-      'tasksCount': 1,
       'hideCompleted': false   
     };
 

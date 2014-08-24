@@ -13,31 +13,20 @@
       this.done = false;
     }
 
-    this.addTask = function(newTask) {
-      if (newTask.title || newTask.description) {
-
-        // add a new task
-        if (!newTask.id) {
-
-          var task = new Task();
-          task.title = newTask.title;
-          task.description = newTask.description;
-          task.id = scope.taskAppState.tasksCount;
-
-          scope.taskAppState.tasks[task.id] = task;
-          scope.taskAppState.tasksCount ++;
-          scope.taskAppState.activeTask = '';
-
-          scope.$emit('taskAppEvent', 'logEvent:userAction', 'New Task Added!');
-        }
-        //edit the existing task
-        else {
-          scope.taskAppState.tasks[newTask.id] = newTask;
-          scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Edited!');
-          scope.taskAppState.activeTask = '';
-        }
+    this.addTask = function (task) {
+      if (scope.taskAppState.tasks.indexOf(task) == -1) {
+        scope.taskAppState.tasks.push({
+          title: task.title,
+          description: task.description,
+          done: false
+        });
+        scope.$emit('taskAppEvent', 'logEvent:userAction', 'New Task Added!');
+      } else {
+        scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task has been updated');
       }
+      scope.taskAppState.activeTask = {};
     };
+
   }
 
   angular.module('taskApp')
@@ -58,19 +47,18 @@
       dataStorage.set('log', data);
 
       //isn't there an async problem here?
-      //dataStorage.set should be written with a callback function!
       self.logList = dataStorage.get('log');
 
     });
 
     scope.$on('logEvent:clearLog', function() {
       self.logList = [];
-      dataStorage.remove('log');
+      dataStorage.clear('log');
     });
   }
 
   angular.module('taskApp')
-    .controller('logController', ['$scope', 'dataStorageService', logController])
+    .controller('logController', ['$scope', 'DataStorageService', logController])
 
 
 }());
@@ -80,9 +68,8 @@
   function mainController(scope) {
 
     scope.taskAppState = {
-      'tasks': {},
+      'tasks': [],
       'activeTask': {},
-      'tasksCount': 1,
       'hideCompleted': false   
     };
 
@@ -102,18 +89,19 @@
 
   function tableController(scope) {
 
-    this.editTask = function(id) {
-      scope.taskAppState.activeTask = scope.taskAppState.tasks[id];
+    this.editTask = function(task) {
+      scope.taskAppState.activeTask = scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)];
     };
 
-    this.removeTask = function(id) {
-      delete scope.taskAppState.tasks[id];
+    this.removeTask = function(task) {
+      scope.taskAppState.tasks.splice(scope.taskAppState.tasks.indexOf(task), 1);
       scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Deleted!');
     };
 
-    this.taskDone = function(id) {
-      scope.taskAppState.tasks[id].done = !scope.taskAppState.tasks[id].done;
-      if (scope.taskAppState.tasks[id].done) {
+    this.taskDone = function(task) {
+      scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done =
+      !scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done;
+      if (scope.taskAppState.tasks[scope.taskAppState.tasks.indexOf(task)].done) {
         scope.$emit('taskAppEvent', 'logEvent:userAction', 'Task Done!');
       }
     };
@@ -147,13 +135,10 @@
 
   function dataStorage() {
 
-    //make this an object with key:value pairs.
-
     //Shouldn't this be with a callback function??
+
     this.set = function(key, newData) {
-
       var data = localStorage.getItem(key);
-
       if (data) {
         data = JSON.parse(data);
       }
@@ -166,17 +151,41 @@
 
     };
 
+    this.updateStr = function(key, newData) {
+      localStorage.setItem(key, newData);
+    };
+
+    this.update = function(key, id, newVal) {
+
+      var content = this.get(key);
+      content[id] = newVal;
+      content = JSON.stringify(content);
+      localStorage.setItem(key, content);
+      return content;
+    };
+
     this.get = function(key) {
       return JSON.parse(localStorage.getItem(key))
     };
 
-    this.remove = function(key) {
+    this.remove = function(key, id) {
+      var content = this.get(key);
+      content.splice(id,1)
+
+
+      content = JSON.stringify(content);
+      localStorage.setItem(key, content);
+      return content;
+    };
+
+    this.clear = function(key) {
       localStorage.removeItem(key);
     };
+
 
   }
 
   angular.module('taskApp')
-    .service('dataStorageService', dataStorage)
+    .service('DataStorageService', dataStorage)
 
 }());
