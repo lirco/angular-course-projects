@@ -5,14 +5,6 @@
 
   function formController(scope) {
 
-    // Task model object
-    function Task() {
-      this.id =  '';
-      this.title = '';
-      this.description = '';
-      this.done = false;
-    }
-
     this.addTask = function (task) {
       if (scope.taskAppState.tasks.indexOf(task) == -1) {
         scope.taskAppState.tasks.push({
